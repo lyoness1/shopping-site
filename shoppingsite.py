@@ -7,7 +7,7 @@ Authors: Joel Burton, Christian Fernandez, Meggie Mahnken.
 """
 
 
-from flask import Flask, render_template, redirect, flash, session 
+from flask import Flask, render_template, redirect, flash, session, request
 import jinja2
 
 import melons
@@ -84,7 +84,7 @@ def shopping_cart():
     for melon_id in melon_ids_in_cart:
 
         # if the melon is not already in the cart, create a key of melon id
-        # 
+        # the value is a dictionary containing melon info
         if melon_id not in cart:
             melon_obj = melons.get_by_id(melon_id)
             cart[melon_id] = {
@@ -93,18 +93,28 @@ def shopping_cart():
                 "unit_price": melon_obj.price,
                 "total_price": melon_obj.price,
             }
+            
+        # if melon is already in cart, increment quantity and total cost
         else:
             cart[melon_id]["qty_ordered"] += 1
             cart[melon_id]["total_price"] = (
                 cart[melon_id]["qty_ordered"] * cart[melon_id]["unit_price"])
 
+        # formats numerical values as monetary strings in a new key: value
+        # pair in the melon dictionary we created above
+        cart[melon_id]["unit_price_str"] = "${:,.2f}".format(
+            cart[melon_id]["unit_price"])
+        cart[melon_id]["total_price_str"] = "${:,.2f}".format(
+            cart[melon_id]["total_price"])
+
+    # initialize variable to count total cost        
     total = 0
 
+    # for every melon in cart, add the total price to the total
     for melon in cart:
         total += cart[melon]["total_price"]
 
-    print cart
-    print total 
+    total = "${:,.2f}".format(total)
 
     return render_template("cart.html", cart=cart, total=total)
 
@@ -151,8 +161,12 @@ def process_login():
     """
 
     # TODO: Need to implement this!
+    user_email = request.form.get("email")
+    user_password = request.form.get("password")
 
-    return "Oops! This needs to be implemented"
+
+
+    return "hi"
 
 
 @app.route("/checkout")

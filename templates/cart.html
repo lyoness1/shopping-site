@@ -2,8 +2,8 @@
 {% extends 'base.html' %}
 
 {% block body %}
-
-
+    
+    <!-- make a table and create row headers -->
     <table class="table table-striped">
         <thead>
         <tr>
@@ -13,17 +13,19 @@
             <th>Total</th>
         </tr>
         </thead>
+        <!-- for every melon id in our cart, we print info from that melon's 
+             dictionary -->
         {% for melon in cart %}
         <tr>
             <td>{{ cart[melon]["melon_name"] }}</td>
             <td>{{ cart[melon]["qty_ordered"] }}</td>
-            <td>{{ cart[melon]["unit_price"] }}</td>
-            <td>{{ cart[melon]["total_price"] }}</td>
+            <td>{{ cart[melon]["unit_price_str"] }}</td>
+            <td>{{ cart[melon]["total_price_str"] }}</td>
         </tr>
         {% endfor %}
     </table>
 
-    <h3>Total: $27.00</h3>
+    <h3>Total: {{total}}</h3>
 
     <a href="/checkout" class="btn btn-large btn-primary">Check Out</a>
 
